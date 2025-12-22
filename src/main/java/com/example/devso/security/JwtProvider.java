@@ -1,4 +1,4 @@
-package com.example.devso.Security;
+package com.example.devso.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

@@ -1,4 +1,4 @@
-package com.example.devso.Security;
+package com.example.devso.security;
 
 import com.example.devso.entity.User;
 import lombok.Getter;

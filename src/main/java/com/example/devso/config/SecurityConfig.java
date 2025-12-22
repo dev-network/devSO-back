@@ -1,8 +1,8 @@
 package com.example.devso.config;
 
 
-import com.example.devso.Security.JwtAuthenticationEntryPoint;
-import com.example.devso.Security.JwtAuthenticationFilter;
+import com.example.devso.security.JwtAuthenticationEntryPoint;
+import com.example.devso.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

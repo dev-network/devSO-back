@@ -6,7 +6,7 @@ import com.example.devso.dto.request.SignupRequest;
 import com.example.devso.dto.response.ApiResponse;
 import com.example.devso.dto.response.TokenResponse;
 import com.example.devso.dto.response.UserResponse;
-import com.example.devso.Security.CustomUserDetails;
+import com.example.devso.security.CustomUserDetails;
 import com.example.devso.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

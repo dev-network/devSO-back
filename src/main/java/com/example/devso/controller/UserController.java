@@ -1,6 +1,6 @@
 package com.example.devso.controller;
 
-import com.example.devso.Security.CustomUserDetails;
+import com.example.devso.security.CustomUserDetails;
 import com.example.devso.dto.request.PasswordChangeRequest;
 import com.example.devso.dto.request.UserUpdateRequest;
 import com.example.devso.dto.response.ApiResponse;
