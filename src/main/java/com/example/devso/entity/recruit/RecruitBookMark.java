@@ -1,5 +1,6 @@
 package com.example.devso.entity.recruit;
 
+import com.example.devso.entity.BaseEntity;
 import com.example.devso.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 })
 @Getter
 @NoArgsConstructor
-public class RecruitBookMark {
+public class RecruitBookMark extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

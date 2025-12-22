@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Table(name = "recruits")
 @Getter
 @NoArgsConstructor
-public class Recruit {
+public class Recruit extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,20 +52,36 @@ public class Recruit {
     @OneToMany(mappedBy = "recruit", cascade = CascadeType.REMOVE)
     private List<RecruitBookMark> recruitBookMarks = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "recruit_stacks")
+    @Column(nullable = false)
+    private LocalDate deadLine;
+
+    @ElementCollection(targetClass = TechStack.class)
+    @CollectionTable(name = "recruit_stacks", joinColumns = @JoinColumn(name = "recruit_id"))
     @Column(name = "stack")
-    private List<String> stacks = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private List<TechStack> stacks = new ArrayList<>();
+
+    @Column(nullable = false)
+    private long viewCount = 0;
+
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
 
     @Builder
-    public Recruit(RecruitProgressType progressType, RecruitPosition position, RecruitStatus status, User user, String imageUrl, String content, String title, RecruitType type) {
-        this.progressType = progressType;
-        this.position = position;
-        this.status = status;
-        this.user = user;
-        this.imageUrl = imageUrl;
-        this.content = content;
-        this.title = title;
+    public Recruit(RecruitType type, String title, String content, int totalCount, int currentCount, String imageUrl, User user, RecruitStatus status, RecruitPosition position, RecruitProgressType progressType, List<RecruitComment> recruitComments, List<RecruitBookMark> recruitBookMarks, List<TechStack> stacks) {
         this.type = type;
+        this.title = title;
+        this.content = content;
+        this.totalCount = totalCount;
+        this.currentCount = currentCount;
+        this.imageUrl = imageUrl;
+        this.user = user;
+        this.status = status;
+        this.position = position;
+        this.progressType = progressType;
+        this.recruitComments = recruitComments;
+        this.recruitBookMarks = recruitBookMarks;
+        this.stacks = stacks;
     }
 }

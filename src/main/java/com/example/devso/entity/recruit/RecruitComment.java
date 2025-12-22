@@ -1,5 +1,6 @@
 package com.example.devso.entity.recruit;
 
+import com.example.devso.entity.BaseEntity;
 import com.example.devso.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "recruit_comments")
 @Getter
 @NoArgsConstructor
-public class RecruitComment {
+public class RecruitComment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
