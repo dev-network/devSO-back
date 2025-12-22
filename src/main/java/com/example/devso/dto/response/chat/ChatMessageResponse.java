@@ -1,26 +1,28 @@
 package com.example.devso.dto.response.chat;
 
-import com.example.devso.dto.response.UserResponse;
-import com.example.devso.entity.User;
 import com.example.devso.entity.chat.ChatMessage;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
 public class ChatMessageResponse {
 
-
+    private Long messageId;
     private Long roomId;
     private Long senderId;
     private String message;
+    private LocalDateTime createdAt;
 
-    public static ChatMessageResponse of(ChatMessage savedMsg) {
+    public static ChatMessageResponse of(ChatMessage msg) {
         return ChatMessageResponse.builder()
-                .roomId(savedMsg.getChatRoom().getId())
-                .senderId(savedMsg.getSenderId())
-                .message(savedMsg.getMessage())
+                .messageId(msg.getId())
+                .roomId(msg.getChatRoom().getId())
+                .senderId(msg.getSenderId())
+                .message(msg.getMessage())
+                .createdAt(msg.getCreatedAt())
                 .build();
     }
 }
