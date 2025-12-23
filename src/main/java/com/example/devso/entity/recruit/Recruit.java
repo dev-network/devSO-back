@@ -29,7 +29,8 @@ public class Recruit extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 2000)
+    @Lob // 대용량 데이터를 저장할 때 사용
+    @Column(nullable = false, columnDefinition = "TEXT") // DB에 TEXT 타입으로 생성되도록 지정
     private String content;
 
     // 모집 인원

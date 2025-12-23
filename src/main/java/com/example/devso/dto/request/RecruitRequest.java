@@ -11,11 +11,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class RecruitRequest {
-    @NotBlank(message = "내용은 필수입니다.")
+    @NotBlank(message = "제목은 필수입니다.") // 메시지 수정 (기존엔 제목인데 내용으로 되어있었음)
     private String title;
 
     @NotBlank(message = "내용은 필수입니다.")
-    @Size(max = 2000, message = "내용은 2000자 이하로 작성해 주세요.")
     private String content;
 
     @NotNull
