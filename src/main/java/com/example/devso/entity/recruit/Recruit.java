@@ -4,7 +4,6 @@ import com.example.devso.dto.request.RecruitRequest;
 import com.example.devso.entity.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,13 +15,16 @@ import java.util.List;
 @Table(name = "recruits")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Recruit extends BaseEntity{
+public class Recruit extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 모집 구분 (스터디 / 프로젝트)
     @Enumerated(EnumType.STRING)
-    private RecruitType type; // STUDY, PROJECT
+    @Column(nullable = false)
+    private RecruitType type;
 
     @Column(nullable = false)
     private String title;
@@ -30,8 +32,12 @@ public class Recruit extends BaseEntity{
     @Column(nullable = false, length = 2000)
     private String content;
 
+    // 모집 인원
+    @Column(nullable = false)
     private int totalCount;
-    private int currentCount;
+
+    @Column(nullable = false)
+    private int currentCount = 0;
 
     private String imageUrl;
 
@@ -39,24 +45,35 @@ public class Recruit extends BaseEntity{
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // 모집 상태
     @Enumerated(EnumType.STRING)
-    private RecruitStatus status; // OPEN, CLOSED
-
-    @Enumerated(EnumType.STRING)
-    private RecruitPosition position; // FRONTEND, BACKEND, FULLSTACK
-
-    @Enumerated(EnumType.STRING)
-    private RecruitProgressType progressType; // ONLINE, OFFLINE, HYBRID
-
-    @OneToMany(mappedBy = "recruit", cascade = CascadeType.REMOVE)
-    private List<RecruitComment> recruitComments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "recruit", cascade = CascadeType.REMOVE)
-    private List<RecruitBookMark> recruitBookMarks = new ArrayList<>();
-
     @Column(nullable = false)
-    private LocalDate deadLine;
+    private RecruitStatus status = RecruitStatus.OPEN;
 
+    // 모집 포지션 (다중 선택)
+    @ElementCollection(targetClass = RecruitPosition.class)
+    @CollectionTable(name = "recruit_positions", joinColumns = @JoinColumn(name = "recruit_id"))
+    @Column(name = "position")
+    @Enumerated(EnumType.STRING)
+    private List<RecruitPosition> positions = new ArrayList<>();
+
+    // 진행 방식
+    @Enumerated(EnumType.STRING)
+    private RecruitProgressType progressType;
+
+    // 모집 기간
+    @Enumerated(EnumType.STRING)
+    private RecruitDuration duration;
+
+    // 연락 방법
+    @Enumerated(EnumType.STRING)
+    private RecruitContactMethod contactMethod;
+
+    // 연락 정보 (이메일 / 링크 / 전화번호 등)
+    @Column(length = 255)
+    private String contactInfo;
+
+    // 모집 기술 스택 (다중 선택)
     @ElementCollection(targetClass = TechStack.class)
     @CollectionTable(name = "recruit_stacks", joinColumns = @JoinColumn(name = "recruit_id"))
     @Column(name = "stack")
@@ -64,49 +81,48 @@ public class Recruit extends BaseEntity{
     private List<TechStack> stacks = new ArrayList<>();
 
     @Column(nullable = false)
+    private LocalDate deadLine;
+
+    @Column(nullable = false)
     private long viewCount = 0;
 
-//    @Builder
-//    public Recruit(RecruitType type, String title, String content, int totalCount, int currentCount, String imageUrl, User user, RecruitStatus status, RecruitPosition position, RecruitProgressType progressType, List<RecruitComment> recruitComments, List<RecruitBookMark> recruitBookMarks, List<TechStack> stacks) {
-//        this.type = type;
-//        this.title = title;
-//        this.content = content;
-//        this.totalCount = totalCount;
-//        this.currentCount = currentCount;
-//        this.imageUrl = imageUrl;
-//        this.user = user;
-//        this.status = status;
-//        this.position = position;
-//        this.progressType = progressType;
-//        this.recruitComments = recruitComments;
-//        this.recruitBookMarks = recruitBookMarks;
-//        this.stacks = stacks;
-//    }
+    @OneToMany(mappedBy = "recruit", cascade = CascadeType.REMOVE)
+    private List<RecruitComment> recruitComments = new ArrayList<>();
 
-    // 생성
+    @OneToMany(mappedBy = "recruit", cascade = CascadeType.REMOVE)
+    private List<RecruitBookMark> recruitBookMarks = new ArrayList<>();
+
+    // ===== 생성 =====
     public static Recruit create(User user, RecruitRequest req) {
         Recruit recruit = new Recruit();
         recruit.user = user;
         recruit.title = req.getTitle();
         recruit.content = req.getContent();
         recruit.type = req.getType();
-        recruit.position = req.getPosition();
+        recruit.positions = req.getPositions();
         recruit.progressType = req.getProgressType();
+        recruit.duration = req.getDuration();
+        recruit.contactMethod = req.getContactMethod();
+        recruit.contactInfo = req.getContactInfo();
         recruit.stacks = req.getStacks();
         recruit.totalCount = req.getTotalCount();
-        recruit.currentCount = 0;
         recruit.status = RecruitStatus.OPEN;
         recruit.deadLine = req.getDeadLine();
         recruit.imageUrl = req.getImageUrl();
+        recruit.viewCount = 0;
+        recruit.currentCount = 0;
         return recruit;
     }
 
-    //수정
+    // ===== 수정 =====
     public void update(
             String title,
             String content,
-            RecruitPosition position,
+            List<RecruitPosition> positions,
             RecruitProgressType progressType,
+            RecruitDuration duration,
+            RecruitContactMethod contactMethod,
+            String contactInfo,
             List<TechStack> stacks,
             int totalCount,
             LocalDate deadLine,
@@ -114,20 +130,23 @@ public class Recruit extends BaseEntity{
     ) {
         this.title = title;
         this.content = content;
-        this.position = position;
+        this.positions = positions;
         this.progressType = progressType;
+        this.duration = duration;
+        this.contactMethod = contactMethod;
+        this.contactInfo = contactInfo;
         this.stacks = stacks;
         this.totalCount = totalCount;
         this.deadLine = deadLine;
         this.imageUrl = imageUrl;
     }
 
-    // 조회수 증가
+    // ===== 조회수 증가 =====
     public void increaseViewCount() {
         this.viewCount++;
     }
 
-    // 모집 인원 증가
+    // ===== 모집 인원 증가 =====
     public void increaseCurrentCount() {
         if (currentCount >= totalCount) {
             throw new IllegalStateException("모집 인원 초과");
@@ -135,14 +154,13 @@ public class Recruit extends BaseEntity{
         currentCount++;
     }
 
-    // 작성자 검증
+    // ===== 작성자 검증 =====
     public boolean isOwner(Long userId) {
         return this.user.getId().equals(userId);
     }
 
-    // 모집 마감
+    // ===== 모집 마감 =====
     public void close() {
         this.status = RecruitStatus.CLOSED;
     }
-
 }

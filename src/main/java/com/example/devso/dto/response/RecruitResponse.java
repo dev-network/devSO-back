@@ -19,10 +19,14 @@ public class RecruitResponse {
     private int currentCount;
     private RecruitType type;
     private RecruitStatus status;
-    private RecruitPosition position;
+    private List<RecruitPosition> positions; // 다중 선택 가능
     private RecruitProgressType progressType;
     private List<TechStack> stacks;
     private String username;
+
+    private RecruitDuration duration;          // 진행 기간
+    private RecruitContactMethod contactMethod; // 연락 방법
+    private String contactInfo;                // 실제 이메일/링크/전화번호
 
     private boolean bookmarked;
     private LocalDateTime createdAt;
@@ -30,6 +34,7 @@ public class RecruitResponse {
     private LocalDate deadLine;
     private long viewCount;
 
+    // 기본 from 메서드 (북마크 false)
     public static RecruitResponse from(Recruit recruit){
         return RecruitResponse.builder()
                 .id(recruit.getId())
@@ -40,9 +45,12 @@ public class RecruitResponse {
                 .currentCount(recruit.getCurrentCount())
                 .type(recruit.getType())
                 .status(recruit.getStatus())
-                .position(recruit.getPosition())
+                .positions(recruit.getPositions())
                 .progressType(recruit.getProgressType())
                 .stacks(recruit.getStacks())
+                .duration(recruit.getDuration())
+                .contactMethod(recruit.getContactMethod())
+                .contactInfo(recruit.getContactInfo())
                 .createdAt(recruit.getCreatedAt())
                 .updatedAt(recruit.getUpdatedAt())
                 .username(recruit.getUser().getUsername())
@@ -52,6 +60,7 @@ public class RecruitResponse {
                 .build();
     }
 
+    // 북마크 여부 포함 from 메서드
     public static RecruitResponse from(Recruit recruit, boolean bookmarked){
         return RecruitResponse.builder()
                 .id(recruit.getId())
@@ -62,9 +71,12 @@ public class RecruitResponse {
                 .currentCount(recruit.getCurrentCount())
                 .type(recruit.getType())
                 .status(recruit.getStatus())
-                .position(recruit.getPosition())
+                .positions(recruit.getPositions())
                 .progressType(recruit.getProgressType())
                 .stacks(recruit.getStacks())
+                .duration(recruit.getDuration())
+                .contactMethod(recruit.getContactMethod())
+                .contactInfo(recruit.getContactInfo())
                 .createdAt(recruit.getCreatedAt())
                 .updatedAt(recruit.getUpdatedAt())
                 .username(recruit.getUser().getUsername())
@@ -74,4 +86,3 @@ public class RecruitResponse {
                 .build();
     }
 }
-

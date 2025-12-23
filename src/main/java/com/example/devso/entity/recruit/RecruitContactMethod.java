@@ -3,15 +3,16 @@ package com.example.devso.entity.recruit;
 import com.example.devso.exception.CustomException;
 import com.example.devso.exception.ErrorCode;
 
-public enum RecruitProgressType {
-    ONLINE(1,"온라인"),
-    OFFLINE(2,"오프라인"),
-    HYBRID(0,"온/오프라인");
+public enum RecruitContactMethod {
+    OPEN_TALK(1, "오픈 톡"),
+    EMAIL(2, "이메일"),
+    GOOGLE_FORM(3, "구글 폼"),
+    OTHER(0, "기타");
 
     private final int value;
     private final String label;
 
-    RecruitProgressType(int value, String label) {
+    RecruitContactMethod(int value, String label) {
         this.value = value;
         this.label = label;
     }
@@ -25,8 +26,8 @@ public enum RecruitProgressType {
     }
 
     // value로 enum 찾기
-    public static RecruitProgressType fromValue(int value) {
-        for (RecruitProgressType method : values()) {
+    public static RecruitContactMethod fromValue(int value) {
+        for (RecruitContactMethod method : values()) {
             if (method.value == value) {
                 return method;
             }

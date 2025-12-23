@@ -64,13 +64,17 @@ public class RecruitService {
         recruit.update(
                 request.getTitle(),
                 request.getContent(),
-                request.getPosition(),
+                request.getPositions(),
                 request.getProgressType(),
+                request.getDuration(),
+                request.getContactMethod(),
+                request.getContactInfo(),
                 request.getStacks(),
                 request.getTotalCount(),
                 request.getDeadLine(),
                 request.getImageUrl()
         );
+
 
         return RecruitResponse.from(recruit);
     }

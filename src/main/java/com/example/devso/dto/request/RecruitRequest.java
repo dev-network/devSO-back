@@ -22,9 +22,6 @@ public class RecruitRequest {
     private RecruitType type;
 
     @NotNull
-    private RecruitPosition position;
-
-    @NotNull
     private RecruitProgressType progressType;
 
     @NotEmpty
@@ -37,4 +34,15 @@ public class RecruitRequest {
 
     @NotNull
     private LocalDate deadLine;
+
+    @NotEmpty
+    private List<RecruitPosition> positions;
+
+    @NotNull
+    private RecruitDuration duration;
+
+    @NotNull
+    private RecruitContactMethod contactMethod;
+
+    private String contactInfo;
 }
