@@ -7,7 +7,6 @@ import com.example.devso.dto.response.RecruitResponse;
 import com.example.devso.service.RecruitService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -51,11 +50,16 @@ public class RecruitController {
                 .body(ApiResponse.success(response));
     }
 
-//
-//    @PostMapping("/{id}/bookmark")
-//    public void toggleBookmark(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
-//        recruitService.toggleBookmark(userDetails, id);
-//    }
+    //북마크
+    @PostMapping("/{id}/bookmark")
+    public ResponseEntity<ApiResponse<Boolean>> toggleBookmark(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        boolean bookmarked = recruitService.toggleBookmark(userDetails.getId(), id);
+        return ResponseEntity.ok(ApiResponse.success(bookmarked));
+    }
+
 //
 //    @PostMapping("/{id}/comments")
 //    public RecruitComment addComment(@PathVariable Long id, @RequestBody String content, @AuthenticationPrincipal CustomUserDetails userDetails) {

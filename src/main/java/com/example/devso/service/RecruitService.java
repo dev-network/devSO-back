@@ -4,6 +4,7 @@ import com.example.devso.dto.request.RecruitRequest;
 import com.example.devso.dto.response.RecruitResponse;
 import com.example.devso.entity.User;
 import com.example.devso.entity.recruit.Recruit;
+import com.example.devso.entity.recruit.RecruitBookMark;
 import com.example.devso.exception.CustomException;
 import com.example.devso.exception.ErrorCode;
 import com.example.devso.repository.RecruitBookMarkRepository;
@@ -28,22 +29,10 @@ public class RecruitService {
     public RecruitResponse create(Long userId, RecruitRequest request){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Recruit recruit = Recruit.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
-                .type(request.getType())
-                .position(request.getPosition())
-                .progressType(request.getProgressType())
-                .stacks(request.getStacks())
-                .totalCount(request.getTotalCount())
-                .currentCount(0)  // 기본 0
-                .status(request.getStatus())
-                .imageUrl(request.getImageUrl())
-                .user(user)
-                .build();
 
-        Recruit saved = recruitRepository.save(recruit);
-        return RecruitResponse.from(saved);
+        Recruit recruit = Recruit.create(user, request);
+        recruitRepository.save(recruit);
+        return RecruitResponse.from(recruit);
     }
 
     //모집글 전체 조회
@@ -62,12 +51,57 @@ public class RecruitService {
         return RecruitResponse.from(recruit);
     }
 
+    //모집글 수정
+    @Transactional
+    public RecruitResponse update(Long userId, Long recruitId, RecruitRequest request) {
+        Recruit recruit = recruitRepository.findById(recruitId)
+                .orElseThrow(() -> new CustomException(ErrorCode.RECRUIT_NOT_FOUND));
+
+        if (!recruit.isOwner(userId)) {
+            throw new CustomException(ErrorCode.NOT_RECRUIT_OWNER);
+        }
+
+        recruit.update(
+                request.getTitle(),
+                request.getContent(),
+                request.getPosition(),
+                request.getProgressType(),
+                request.getStacks(),
+                request.getTotalCount(),
+                request.getDeadLine(),
+                request.getImageUrl()
+        );
+
+        return RecruitResponse.from(recruit);
+    }
+
+
 
     //Recruit엔티티와 사용자 정보로 상태 반환
     private RecruitResponse toRecruitResponseWithStatus(Recruit recruit, Long currentUserId) {
-        //북마크 여부
+        //북마크 표시
         boolean bookmarked = currentUserId != null
                 && recruitBookMarkRepository.existsByUserIdAndRecruitId(currentUserId, recruit.getId());
         return RecruitResponse.from(recruit, bookmarked);
     }
+
+    //북마크 토글
+    @Transactional
+    public boolean toggleBookmark(Long userId, Long recruitId) {
+        Recruit recruit = recruitRepository.findById(recruitId)
+                .orElseThrow(() -> new CustomException(ErrorCode.RECRUIT_NOT_FOUND));
+
+        boolean exists = recruitBookMarkRepository.existsByUserIdAndRecruitId(userId, recruitId);
+        if (exists) {
+            recruitBookMarkRepository.deleteByUserIdAndRecruitId(userId, recruitId);
+            return false; // 북마크 해제
+        } else {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+            RecruitBookMark bookmark = new RecruitBookMark(user, recruit);
+            recruitBookMarkRepository.save(bookmark);
+            return true; // 북마크 등록
+        }
+    }
+
 }

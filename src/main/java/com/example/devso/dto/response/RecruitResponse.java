@@ -1,7 +1,6 @@
 package com.example.devso.dto.response;
 
-import com.example.devso.entity.recruit.Recruit;
-import com.example.devso.entity.recruit.TechStack;
+import com.example.devso.entity.recruit.*;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,10 +17,10 @@ public class RecruitResponse {
     private String imageUrl;
     private int totalCount;
     private int currentCount;
-    private String type;
-    private String status;
-    private String position;
-    private String progressType;
+    private RecruitType type;
+    private RecruitStatus status;
+    private RecruitPosition position;
+    private RecruitProgressType progressType;
     private List<TechStack> stacks;
     private String username;
 
@@ -31,10 +30,6 @@ public class RecruitResponse {
     private LocalDate deadLine;
     private long viewCount;
 
-    public void increaseViewCount() {
-        this.viewCount++;
-    }
-
     public static RecruitResponse from(Recruit recruit){
         return RecruitResponse.builder()
                 .id(recruit.getId())
@@ -43,17 +38,17 @@ public class RecruitResponse {
                 .imageUrl(recruit.getImageUrl())
                 .totalCount(recruit.getTotalCount())
                 .currentCount(recruit.getCurrentCount())
-                .type(recruit.getType().name())
-                .status(recruit.getStatus().name())
-                .position(recruit.getPosition().name())
-                .progressType(recruit.getProgressType().name())
+                .type(recruit.getType())
+                .status(recruit.getStatus())
+                .position(recruit.getPosition())
+                .progressType(recruit.getProgressType())
                 .stacks(recruit.getStacks())
                 .createdAt(recruit.getCreatedAt())
                 .updatedAt(recruit.getUpdatedAt())
                 .username(recruit.getUser().getUsername())
                 .deadLine(recruit.getDeadLine())
                 .bookmarked(false)
-                .viewCount(0)
+                .viewCount(recruit.getViewCount())
                 .build();
     }
 
@@ -65,10 +60,10 @@ public class RecruitResponse {
                 .imageUrl(recruit.getImageUrl())
                 .totalCount(recruit.getTotalCount())
                 .currentCount(recruit.getCurrentCount())
-                .type(recruit.getType().name())
-                .status(recruit.getStatus().name())
-                .position(recruit.getPosition().name())
-                .progressType(recruit.getProgressType().name())
+                .type(recruit.getType())
+                .status(recruit.getStatus())
+                .position(recruit.getPosition())
+                .progressType(recruit.getProgressType())
                 .stacks(recruit.getStacks())
                 .createdAt(recruit.getCreatedAt())
                 .updatedAt(recruit.getUpdatedAt())

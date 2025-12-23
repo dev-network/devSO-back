@@ -8,9 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "recruit_bookmarks", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "recruit_id"}) // 동일 사용자의 중복 북마크 방지
-})
+@Table(name = "recruit_bookmarks")
 @Getter
 @NoArgsConstructor
 public class RecruitBookMark extends BaseEntity {

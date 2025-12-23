@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface RecruitBookMarkRepository extends JpaRepository<RecruitBookMark, Long> {
     //북마크 여부
     boolean existsByUserIdAndRecruitId(Long userId, Long RecruitId);
+    //북마크 해제
+    void deleteByUserIdAndRecruitId(Long userId, Long recruitId);
 }

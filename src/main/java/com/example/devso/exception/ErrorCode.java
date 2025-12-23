@@ -47,7 +47,8 @@ public enum ErrorCode {
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "서버 오류가 발생했습니다"),
 
     //Recruit
-    RECRUIT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUIT_NOT_FOUND", "팀원 모집글을 찾을 수 없습니다");
+    RECRUIT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUIT_NOT_FOUND", "팀원 모집글을 찾을 수 없습니다"),
+    NOT_RECRUIT_OWNER(HttpStatus.FORBIDDEN, "NOT_RECRUIT_OWNER", "본인의 팀원 모집글만 수정할 수 있습니다");
 
     private final HttpStatus status;
     private final String code;

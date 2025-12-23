@@ -1,12 +1,11 @@
 package com.example.devso.dto.request;
 
 import com.example.devso.entity.recruit.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -28,14 +27,14 @@ public class RecruitRequest {
     @NotNull
     private RecruitProgressType progressType;
 
-    @NotNull
-    private RecruitStatus status;
-
-    @NotNull
+    @NotEmpty
     private List<TechStack> stacks;
 
-    @NotNull
+    @Min(1)
     private Integer totalCount;
 
     private String imageUrl;
+
+    @NotNull
+    private LocalDate deadLine;
 }
