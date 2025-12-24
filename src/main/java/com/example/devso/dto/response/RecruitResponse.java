@@ -33,6 +33,7 @@ public class RecruitResponse {
     private LocalDateTime updatedAt;
     private LocalDate deadLine;
     private long viewCount;
+    private long bookmarkCount;
 
     // 기본 from 메서드 (북마크 false)
     public static RecruitResponse from(Recruit recruit){
@@ -57,6 +58,7 @@ public class RecruitResponse {
                 .deadLine(recruit.getDeadLine())
                 .bookmarked(false)
                 .viewCount(recruit.getViewCount())
+                .bookmarkCount(recruit.getRecruitBookMarks().size())
                 .build();
     }
 
@@ -83,6 +85,7 @@ public class RecruitResponse {
                 .deadLine(recruit.getDeadLine())
                 .bookmarked(bookmarked)
                 .viewCount(recruit.getViewCount())
+                .bookmarkCount(recruit.getRecruitBookMarks().size())
                 .build();
     }
 }

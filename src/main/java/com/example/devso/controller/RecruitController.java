@@ -51,8 +51,13 @@ public class RecruitController {
 
     @Operation(summary = "모집글 상세조회")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<RecruitResponse>> findById(@PathVariable Long id){
-        RecruitResponse response = recruitService.findById(id);
+    public ResponseEntity<ApiResponse<RecruitResponse>> findById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        System.out.println("로그인 유저 정보: " + userDetails);
+        Long userId = userDetails.getId() != null ? userDetails.getId() : null;
+        RecruitResponse response = recruitService.findById(id, userId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(response));
     }
@@ -66,6 +71,43 @@ public class RecruitController {
         boolean bookmarked = recruitService.toggleBookmark(userDetails.getId(), id);
         return ResponseEntity.ok(ApiResponse.success(bookmarked));
     }
+
+    @Operation(summary = "모집글 수정")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<RecruitResponse>> update(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody RecruitRequest request
+    ) {
+        RecruitResponse response = recruitService.update(userDetails.getId(), id, request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @Operation(summary = "모집글 삭제")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        recruitService.delete(userDetails.getId(), id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "모집글 상태 변경")
+    @PutMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<RecruitStatus>> toggleStatus(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        RecruitStatus newStatus = recruitService.toggleStatus(userDetails.getId(), id);
+        return ResponseEntity.ok(ApiResponse.success(newStatus));
+    }
+
+    //
+//    @PostMapping("/{id}/comments")
+//    public RecruitComment addComment(@PathVariable Long id, @RequestBody String content, @AuthenticationPrincipal CustomUserDetails userDetails) {
+//        return recruitService.addComment(userDetails, id, content);
+//    }
 
 
     //enum (팀원 모집 게시글 생성 시 select option들)
@@ -131,11 +173,4 @@ public class RecruitController {
                 .toList();
         return ResponseEntity.ok(memberCounts);
     }
-
-
-//
-//    @PostMapping("/{id}/comments")
-//    public RecruitComment addComment(@PathVariable Long id, @RequestBody String content, @AuthenticationPrincipal CustomUserDetails userDetails) {
-//        return recruitService.addComment(userDetails, id, content);
-//    }
 }

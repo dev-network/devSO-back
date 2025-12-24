@@ -5,6 +5,7 @@ import com.example.devso.dto.response.RecruitResponse;
 import com.example.devso.entity.User;
 import com.example.devso.entity.recruit.Recruit;
 import com.example.devso.entity.recruit.RecruitBookMark;
+import com.example.devso.entity.recruit.RecruitStatus;
 import com.example.devso.exception.CustomException;
 import com.example.devso.exception.ErrorCode;
 import com.example.devso.repository.RecruitBookMarkRepository;
@@ -43,12 +44,12 @@ public class RecruitService {
 
     //모집글 상세 조회
     @Transactional
-    public RecruitResponse findById(Long recruitId) {
-        Recruit recruit = recruitRepository.findById(recruitId)
+    public RecruitResponse findById(Long recruitId, Long currentUserId) {
+        Recruit recruit = recruitRepository.findByIdWithDetails(recruitId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RECRUIT_NOT_FOUND));
         // 상세 조회에서만 조회수 증가
         recruit.increaseViewCount();
-        return RecruitResponse.from(recruit);
+        return toRecruitResponseWithStatus(recruit, currentUserId);
     }
 
     //모집글 수정
@@ -77,6 +78,40 @@ public class RecruitService {
 
 
         return RecruitResponse.from(recruit);
+    }
+
+    // 모집글 상태 토글(OPEN/CLOSE)
+    @Transactional
+    public RecruitStatus toggleStatus(Long userId, Long recruitId) {
+        Recruit recruit = recruitRepository.findById(recruitId)
+                .orElseThrow(() -> new CustomException(ErrorCode.RECRUIT_NOT_FOUND));
+
+        // 작성자 검증 (엔티티의 isOwner 메서드 활용)
+        if (!recruit.isOwner(userId)) {
+            throw new CustomException(ErrorCode.NOT_RECRUIT_OWNER);
+        }
+
+        // 상태 토글 로직
+        if (recruit.getStatus() == RecruitStatus.OPEN) {
+            recruit.close(); // 엔티티의 close() 메서드 호출
+        } else {
+            recruit.open();
+        }
+
+        return recruit.getStatus();
+    }
+
+    //모집글 삭제(작성자 본인만 가능)
+    @Transactional
+    public void delete(Long userId, Long recruitId) {
+        Recruit recruit = recruitRepository.findById(recruitId)
+                .orElseThrow(() -> new CustomException(ErrorCode.RECRUIT_NOT_FOUND));
+
+        if (!recruit.isOwner(userId)) {
+            throw new CustomException(ErrorCode.NOT_RECRUIT_OWNER);
+        }
+
+        recruitRepository.delete(recruit);
     }
 
 

@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,6 +16,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "recruits")
+@SQLDelete(sql = "UPDATE recruits SET deleted_at = NOW() WHERE id = ?")
+@Where(clause = "deleted_at IS NULL") // 조회 시 삭제된 데이터 제외
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Recruit extends BaseEntity {
@@ -52,6 +57,7 @@ public class Recruit extends BaseEntity {
     private RecruitStatus status = RecruitStatus.OPEN;
 
     // 모집 포지션 (다중 선택)
+    @BatchSize(size = 10)
     @ElementCollection(targetClass = RecruitPosition.class)
     @CollectionTable(name = "recruit_positions", joinColumns = @JoinColumn(name = "recruit_id"))
     @Column(name = "position")
@@ -75,6 +81,7 @@ public class Recruit extends BaseEntity {
     private String contactInfo;
 
     // 모집 기술 스택 (다중 선택)
+    @BatchSize(size = 10)
     @ElementCollection(targetClass = TechStack.class)
     @CollectionTable(name = "recruit_stacks", joinColumns = @JoinColumn(name = "recruit_id"))
     @Column(name = "stack")
@@ -87,10 +94,11 @@ public class Recruit extends BaseEntity {
     @Column(nullable = false)
     private long viewCount = 0;
 
-    @OneToMany(mappedBy = "recruit", cascade = CascadeType.REMOVE)
+    //Todo : cascade = CascadeType.REMOVE 추후 배치를 통한 물리 삭제 예정
+    @OneToMany(mappedBy = "recruit")
     private List<RecruitComment> recruitComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recruit", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "recruit")
     private List<RecruitBookMark> recruitBookMarks = new ArrayList<>();
 
     // ===== 생성 =====
@@ -163,5 +171,10 @@ public class Recruit extends BaseEntity {
     // ===== 모집 마감 =====
     public void close() {
         this.status = RecruitStatus.CLOSED;
+    }
+
+    // ===== 모집 재오픈 =====
+    public void open() {
+        this.status = RecruitStatus.OPEN;
     }
 }

@@ -6,9 +6,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "recruit_comments")
+@SQLDelete(sql = "UPDATE recruit_comments SET deleted_at = NOW() WHERE id = ?")
+@Where(clause = "deleted_at IS NULL")
 @Getter
 @NoArgsConstructor
 public class RecruitComment extends BaseEntity {
