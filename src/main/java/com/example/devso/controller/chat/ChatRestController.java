@@ -63,4 +63,14 @@ public class ChatRestController {
         chatService.markAsRead(roomId, userDetails.getId());
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "채팅방 나가기")
+    @DeleteMapping("/rooms/{roomId}")
+    public ResponseEntity<Void> leaveRoom(
+            @PathVariable Long roomId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        chatService.leaveChatRoom(roomId, userDetails.getId());
+        return ResponseEntity.noContent().build();
+    }
 }
