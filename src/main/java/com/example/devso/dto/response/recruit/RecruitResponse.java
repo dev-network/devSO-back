@@ -1,4 +1,4 @@
-package com.example.devso.dto.response;
+package com.example.devso.dto.response.recruit;
 
 import com.example.devso.entity.recruit.*;
 import lombok.Builder;

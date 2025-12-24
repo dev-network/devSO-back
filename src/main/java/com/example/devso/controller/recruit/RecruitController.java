@@ -1,12 +1,15 @@
-package com.example.devso.controller;
+package com.example.devso.controller.recruit;
 
+import com.example.devso.dto.request.recruit.RecruitCommentRequest;
+import com.example.devso.dto.response.recruit.RecruitCommentResponse;
 import com.example.devso.security.CustomUserDetails;
-import com.example.devso.dto.request.RecruitRequest;
+import com.example.devso.dto.request.recruit.RecruitRequest;
 import com.example.devso.dto.response.ApiResponse;
 import com.example.devso.dto.response.EnumResponse;
-import com.example.devso.dto.response.RecruitResponse;
+import com.example.devso.dto.response.recruit.RecruitResponse;
 import com.example.devso.entity.recruit.*;
-import com.example.devso.service.RecruitService;
+import com.example.devso.service.recruit.RecruitCommentService;
+import com.example.devso.service.recruit.RecruitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecruitController {
     private final RecruitService recruitService;
+    private final RecruitCommentService recruitCommentService;
 
     @Operation(summary = "모집글 생성")
     @PostMapping
@@ -103,13 +107,20 @@ public class RecruitController {
         return ResponseEntity.ok(ApiResponse.success(newStatus));
     }
 
-    //
-//    @PostMapping("/{id}/comments")
-//    public RecruitComment addComment(@PathVariable Long id, @RequestBody String content, @AuthenticationPrincipal CustomUserDetails userDetails) {
-//        return recruitService.addComment(userDetails, id, content);
-//    }
+    //댓글 생성
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<ApiResponse<RecruitCommentResponse>> createComment(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody RecruitCommentRequest request
+    ){
+        RecruitCommentResponse response = recruitCommentService.create(id,userDetails.getId(), request);
+        return  ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(response));
+    }
 
-// enum (팀원 모집 게시글 생성 시 select option들)
+
+    // enum
     @Operation(summary = "포지션 enum 조회")
     @GetMapping("/enum/position")
     public ResponseEntity<List<EnumResponse>> getPositions() {

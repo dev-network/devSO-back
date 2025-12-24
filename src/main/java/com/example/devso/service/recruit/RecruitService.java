@@ -1,15 +1,15 @@
-package com.example.devso.service;
+package com.example.devso.service.recruit;
 
-import com.example.devso.dto.request.RecruitRequest;
-import com.example.devso.dto.response.RecruitResponse;
+import com.example.devso.dto.request.recruit.RecruitRequest;
+import com.example.devso.dto.response.recruit.RecruitResponse;
 import com.example.devso.entity.User;
 import com.example.devso.entity.recruit.Recruit;
 import com.example.devso.entity.recruit.RecruitBookMark;
 import com.example.devso.entity.recruit.RecruitStatus;
 import com.example.devso.exception.CustomException;
 import com.example.devso.exception.ErrorCode;
-import com.example.devso.repository.RecruitBookMarkRepository;
-import com.example.devso.repository.RecruitRepository;
+import com.example.devso.repository.recruit.RecruitBookMarkRepository;
+import com.example.devso.repository.recruit.RecruitRepository;
 import com.example.devso.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
