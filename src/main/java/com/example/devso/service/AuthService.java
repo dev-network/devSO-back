@@ -9,7 +9,7 @@ import com.example.devso.dto.response.UserResponse;
 import com.example.devso.entity.AuthProvider;
 import com.example.devso.entity.User;
 import com.example.devso.repository.UserRepository;
-import com.example.devso.Security.JwtProvider;
+import com.example.devso.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

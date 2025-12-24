@@ -1,4 +1,4 @@
-package com.example.devso.Security;
+package com.example.devso.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,8 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
 
-
-        if (path.startsWith("/api/auth/signup") || path.startsWith("/api/auth/login") || path.startsWith("/api/auth/kakao") || path.startsWith("/api/users")) {
+        if (path.startsWith("/api/auth/signup") || path.startsWith("/api/auth/login") || path.startsWith("/api/auth/kakao")) {
             return true;
         }
         if (path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs") || path.startsWith("/h2-console") || path.startsWith("/uploads")) {
