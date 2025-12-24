@@ -27,7 +27,6 @@ public class Recruit extends BaseEntity {
     private Long id;
 
     // 모집 구분 (스터디 / 프로젝트)
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RecruitType type;
 
@@ -52,7 +51,6 @@ public class Recruit extends BaseEntity {
     private User user;
 
     // 모집 상태
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RecruitStatus status = RecruitStatus.OPEN;
 
@@ -61,19 +59,15 @@ public class Recruit extends BaseEntity {
     @ElementCollection(targetClass = RecruitPosition.class)
     @CollectionTable(name = "recruit_positions", joinColumns = @JoinColumn(name = "recruit_id"))
     @Column(name = "position")
-    @Enumerated(EnumType.STRING)
     private List<RecruitPosition> positions = new ArrayList<>();
 
     // 진행 방식
-    @Enumerated(EnumType.STRING)
     private RecruitProgressType progressType;
 
     // 모집 기간
-    @Enumerated(EnumType.STRING)
     private RecruitDuration duration;
 
     // 연락 방법
-    @Enumerated(EnumType.STRING)
     private RecruitContactMethod contactMethod;
 
     // 연락 정보 (이메일 / 링크 / 전화번호 등)
@@ -85,7 +79,6 @@ public class Recruit extends BaseEntity {
     @ElementCollection(targetClass = TechStack.class)
     @CollectionTable(name = "recruit_stacks", joinColumns = @JoinColumn(name = "recruit_id"))
     @Column(name = "stack")
-    @Enumerated(EnumType.STRING)
     private List<TechStack> stacks = new ArrayList<>();
 
     @Column(nullable = false)

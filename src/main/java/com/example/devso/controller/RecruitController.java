@@ -109,13 +109,12 @@ public class RecruitController {
 //        return recruitService.addComment(userDetails, id, content);
 //    }
 
-
-    //enum (팀원 모집 게시글 생성 시 select option들)
+// enum (팀원 모집 게시글 생성 시 select option들)
     @Operation(summary = "포지션 enum 조회")
     @GetMapping("/enum/position")
     public ResponseEntity<List<EnumResponse>> getPositions() {
         List<EnumResponse> positions = Arrays.stream(RecruitPosition.values())
-                .map(pos -> new EnumResponse(pos.getValue(), pos.getLabel()))
+                .map(pos -> new EnumResponse(pos.getValue(), pos.getLabel(), pos.name()))
                 .toList();
         return ResponseEntity.ok(positions);
     }
@@ -124,7 +123,7 @@ public class RecruitController {
     @GetMapping("/enum/type")
     public ResponseEntity<List<EnumResponse>> getTypes() {
         List<EnumResponse> types = Arrays.stream(RecruitType.values())
-                .map(type -> new EnumResponse(type.getValue(), type.getLabel()))
+                .map(type -> new EnumResponse(type.getValue(), type.getLabel(), type.name()))
                 .toList();
         return ResponseEntity.ok(types);
     }
@@ -133,7 +132,7 @@ public class RecruitController {
     @GetMapping("/enum/progress-type")
     public ResponseEntity<List<EnumResponse>> getProgress() {
         List<EnumResponse> progress = Arrays.stream(RecruitProgressType.values())
-                .map(p -> new EnumResponse(p.getValue(), p.getLabel()))
+                .map(p -> new EnumResponse(p.getValue(), p.getLabel(), p.name()))
                 .toList();
         return ResponseEntity.ok(progress);
     }
@@ -142,7 +141,7 @@ public class RecruitController {
     @GetMapping("/enum/tech-stacks")
     public ResponseEntity<List<EnumResponse>> getTechStacks() {
         List<EnumResponse> stacks = Arrays.stream(TechStack.values())
-                .map(stack -> new EnumResponse(stack.getValue(), stack.getLabel()))
+                .map(stack -> new EnumResponse(stack.getValue(), stack.getLabel(), stack.name()))
                 .toList();
         return ResponseEntity.ok(stacks);
     }
@@ -151,7 +150,7 @@ public class RecruitController {
     @GetMapping("/enum/contact")
     public ResponseEntity<List<EnumResponse>> getContactTypes() {
         List<EnumResponse> contactTypes = Arrays.stream(RecruitContactMethod.values())
-                .map(c -> new EnumResponse(c.getValue(), c.getLabel()))
+                .map(c -> new EnumResponse(c.getValue(), c.getLabel(), c.name()))
                 .toList();
         return ResponseEntity.ok(contactTypes);
     }
@@ -160,7 +159,7 @@ public class RecruitController {
     @GetMapping("/enum/duration")
     public ResponseEntity<List<EnumResponse>> getDurationTypes() {
         List<EnumResponse> durationTypes = Arrays.stream(RecruitDuration.values())
-                .map(d -> new EnumResponse(d.getValue(), d.getLabel()))
+                .map(d -> new EnumResponse(d.getValue(), d.getLabel(), d.name()))
                 .toList();
         return ResponseEntity.ok(durationTypes);
     }
@@ -169,7 +168,7 @@ public class RecruitController {
     @GetMapping("/enum/memberCount")
     public ResponseEntity<List<EnumResponse>> getMemberCount() {
         List<EnumResponse> memberCounts = Arrays.stream(RecruitCountOption.values())
-                .map(m -> new EnumResponse(m.getValue(), m.getLabel()))
+                .map(m -> new EnumResponse(m.getValue(), m.getLabel(), m.name()))
                 .toList();
         return ResponseEntity.ok(memberCounts);
     }
