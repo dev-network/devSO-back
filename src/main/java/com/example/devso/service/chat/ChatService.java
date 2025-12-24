@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -50,9 +51,6 @@ public class ChatService {
                 });
     }
 
-    /**
-     * 메시지 저장
-     */
     @Transactional
     public ChatMessage saveMessage(Long roomId, Long senderId, String text) {
         ChatRoom room = chatRoomRepository.findById(roomId)
@@ -68,25 +66,28 @@ public class ChatService {
         return chatMessageRepository.save(message);
     }
 
-    /**
-     * 채팅방 입장 시 읽음 처리
-     */
     @Transactional
     public void markAsRead(Long roomId, Long userId) {
         chatMessageRepository.updateReadStatus(roomId, userId);
     }
 
-    /**
-     * 채팅 메시지 내역 조회 (페이징)
-     */
     public Page<ChatMessageResponse> getMessages(Long roomId, Long userId, Pageable pageable) {
         // 사용자가 해당 채팅방의 멤버인지 확인하는 권한 검사
         boolean isMember = chatRoomMemberRepository.existsByChatRoomIdAndUserId(roomId, userId) == 1;
+
         if (!isMember) {
             throw new SecurityException("해당 채팅방에 접근할 권한이 없습니다.");
         }
-
         Page<ChatMessage> messages = chatMessageRepository.findByChatRoomId(roomId, pageable);
         return messages.map(ChatMessageResponse::of);
+    }
+
+    @Transactional
+    public void leaveChatRoom(Long roomId, Long userId) {
+        chatRoomMemberRepository.deleteByChatRoomIdAndUserId(roomId, userId, LocalDateTime.now());
+        if (chatRoomMemberRepository.countByChatRoomId(roomId) == 0) {
+            chatRoomRepository.deleteById(roomId, LocalDateTime.now());
+            chatMessageRepository.deleteByRoomId(roomId, LocalDateTime.now());
+        }
     }
 }
