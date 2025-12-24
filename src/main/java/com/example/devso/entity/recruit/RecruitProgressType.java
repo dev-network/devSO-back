@@ -2,6 +2,8 @@ package com.example.devso.entity.recruit;
 
 import com.example.devso.exception.CustomException;
 import com.example.devso.exception.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum RecruitProgressType {
     ONLINE(1,"온라인"),
@@ -16,6 +18,7 @@ public enum RecruitProgressType {
         this.label = label;
     }
 
+    @JsonValue
     public int getValue() {
         return value;
     }
@@ -25,6 +28,7 @@ public enum RecruitProgressType {
     }
 
     // value로 enum 찾기
+    @JsonCreator
     public static RecruitProgressType fromValue(int value) {
         for (RecruitProgressType method : values()) {
             if (method.value == value) {

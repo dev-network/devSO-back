@@ -2,6 +2,8 @@ package com.example.devso.entity.recruit;
 
 import com.example.devso.exception.CustomException;
 import com.example.devso.exception.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum TechStack {
     JAVASCRIPT(1, "JavaScript"),
@@ -46,6 +48,7 @@ public enum TechStack {
         this.label = label;
     }
 
+    @JsonValue
     public int getValue() {
         return value;
     }
@@ -54,6 +57,7 @@ public enum TechStack {
         return label;
     }
 
+    @JsonCreator
     public static TechStack fromValue(int value) {
         for (TechStack stack : values()) {
             if (stack.value == value) {

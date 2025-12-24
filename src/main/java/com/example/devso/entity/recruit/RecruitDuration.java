@@ -2,6 +2,8 @@ package com.example.devso.entity.recruit;
 
 import com.example.devso.exception.CustomException;
 import com.example.devso.exception.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum RecruitDuration {
     ONE_MONTH(1, "1개월"),
@@ -20,6 +22,7 @@ public enum RecruitDuration {
         this.label = label;
     }
 
+    @JsonValue
     public int getValue() {
         return value;
     }
@@ -29,6 +32,7 @@ public enum RecruitDuration {
     }
 
     // value로 enum 찾기
+    @JsonCreator
     public static RecruitDuration fromValue(int value) {
         for (RecruitDuration method : values()) {
             if (method.value == value) {
