@@ -40,5 +40,10 @@ public class RecruitComment extends BaseEntity {
         comment.recruit = recruit;
         return comment;
     }
+
+    // ===== 수정 =====
+    public void update(String content) {
+        this.content = content;
+    }
 }
 

@@ -119,6 +119,37 @@ public class RecruitController {
                 .body(ApiResponse.success(response));
     }
 
+    //특정 게시물의 댓글 목록
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<ApiResponse<List<RecruitCommentResponse>>> getComments(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        List<RecruitCommentResponse> comments = recruitCommentService.findByRecruitId(id, userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(comments));
+    }
+
+    //댓글 수정
+    @PutMapping("/{id}/comments/{commentId}")
+    public ResponseEntity<ApiResponse<RecruitCommentResponse>> updateComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody RecruitCommentRequest request
+    ) {
+        RecruitCommentResponse response = recruitCommentService.update(commentId, userDetails.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    // 댓글 삭제
+    @DeleteMapping("/{id}/comments/{commentId}")
+    public ResponseEntity<Void> deleteComments(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        recruitCommentService.delete(commentId, userDetails.getId());
+        return ResponseEntity.noContent().build();
+    }
+
 
     // enum
     @Operation(summary = "포지션 enum 조회")
