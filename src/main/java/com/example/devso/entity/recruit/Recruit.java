@@ -1,7 +1,8 @@
 package com.example.devso.entity.recruit;
 
-import com.example.devso.dto.request.RecruitRequest;
-import com.example.devso.entity.*;
+import com.example.devso.dto.request.recruit.RecruitRequest;
+import com.example.devso.entity.BaseEntity;
+import com.example.devso.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -87,6 +88,9 @@ public class Recruit extends BaseEntity {
     @Column(nullable = false)
     private long viewCount = 0;
 
+    @Column(nullable = false)
+    private int commentCount = 0;
+
     //Todo : cascade = CascadeType.REMOVE 추후 배치를 통한 물리 삭제 예정
     @OneToMany(mappedBy = "recruit")
     private List<RecruitComment> recruitComments = new ArrayList<>();
@@ -113,6 +117,7 @@ public class Recruit extends BaseEntity {
         recruit.imageUrl = req.getImageUrl();
         recruit.viewCount = 0;
         recruit.currentCount = 0;
+        recruit.commentCount = 0; // 초기값 명시
         return recruit;
     }
 
@@ -154,6 +159,18 @@ public class Recruit extends BaseEntity {
             throw new IllegalStateException("모집 인원 초과");
         }
         currentCount++;
+    }
+
+    //===== 댓글 수 증가 =====
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    // ===== 댓글 수 감소 =====
+    public void decreaseCommentCount() {
+        if (this.commentCount > 0) {
+            this.commentCount--;
+        }
     }
 
     // ===== 작성자 검증 =====

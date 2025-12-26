@@ -1,4 +1,4 @@
-package com.example.devso.dto.request;
+package com.example.devso.dto.request.recruit;
 
 import com.example.devso.entity.recruit.*;
 import jakarta.validation.constraints.*;

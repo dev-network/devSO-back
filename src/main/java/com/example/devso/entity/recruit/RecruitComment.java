@@ -1,5 +1,6 @@
 package com.example.devso.entity.recruit;
 
+import com.example.devso.dto.request.recruit.RecruitRequest;
 import com.example.devso.entity.BaseEntity;
 import com.example.devso.entity.User;
 import jakarta.persistence.*;
@@ -31,11 +32,18 @@ public class RecruitComment extends BaseEntity {
     @JoinColumn(name = "recruit_id", nullable = false)
     private Recruit recruit;
 
-    @Builder
-    public RecruitComment(String content, User user, Recruit recruit) {
+    // ===== 생성 =====
+    public static RecruitComment create(String content, User user, Recruit recruit) {
+        RecruitComment comment = new RecruitComment();
+        comment.content = content;
+        comment.user = user;
+        comment.recruit = recruit;
+        return comment;
+    }
+
+    // ===== 수정 =====
+    public void update(String content) {
         this.content = content;
-        this.user = user;
-        this.recruit = recruit;
     }
 }
 

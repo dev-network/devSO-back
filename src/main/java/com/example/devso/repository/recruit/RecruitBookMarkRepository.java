@@ -1,4 +1,4 @@
-package com.example.devso.repository;
+package com.example.devso.repository.recruit;
 
 import com.example.devso.entity.recruit.RecruitBookMark;
 import org.springframework.data.jpa.repository.JpaRepository;
