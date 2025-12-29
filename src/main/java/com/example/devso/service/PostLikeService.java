@@ -27,7 +27,7 @@ public class PostLikeService {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdAndDeletedAtIsNull(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 이미 좋아요 했는지 확인
@@ -49,7 +49,7 @@ public class PostLikeService {
 
     @Transactional
     public LikeResponse unlike(Long userId, Long postId) {
-        if (!postRepository.existsById(postId)) {
+        if (!postRepository.existsByIdAndDeletedAtIsNull(postId)) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
 
@@ -63,7 +63,7 @@ public class PostLikeService {
     }
 
     public LikeResponse getLikeStatus(Long postId, Long userId) {
-        if(!postRepository.existsById(postId)) {
+        if(!postRepository.existsByIdAndDeletedAtIsNull(postId)) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
 

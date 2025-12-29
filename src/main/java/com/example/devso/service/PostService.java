@@ -76,7 +76,7 @@ public class PostService {
 
     @Transactional
     public PostResponse update(Long postId, Long userId, PostUpdateRequest request) {
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdAndDeletedAtIsNull(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         if(!post.getUser().getId().equals(userId)) {
@@ -95,13 +95,14 @@ public class PostService {
 
     @Transactional
     public void delete(Long postId, Long userId) {
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdAndDeletedAtIsNull(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if(!post.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.NOT_POST_OWNER);
         }
 
-        postRepository.delete(post);
+        post.markDeleted();
+        postRepository.save(post);
 
     }
 
@@ -109,7 +110,7 @@ public class PostService {
         boolean liked = currentUserId != null
                 && postLikeRepository.existsByUserIdAndPostId(currentUserId, post.getId());
         long likeCount = postLikeRepository.countByPostId(post.getId());
-        long commentCount = commentRepository.countByPostId(post.getId());
+        long commentCount = commentRepository.countByPostIdAndDeletedAtIsNull(post.getId());
 
         return PostResponse.from(post, liked, likeCount, commentCount);
 

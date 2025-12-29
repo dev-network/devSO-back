@@ -32,7 +32,7 @@ public class CommentService {
             CommentCreateRequest request
     ) {
 
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdAndDeletedAtIsNull(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         User user = userRepository.findById(userId)
@@ -49,7 +49,7 @@ public class CommentService {
     }
 
     public List<CommentResponse> findByPostId(Long postId) {
-        if (!postRepository.existsById(postId)) {
+        if (!postRepository.existsByIdAndDeletedAtIsNull(postId)) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
 
@@ -61,14 +61,15 @@ public class CommentService {
 
     @Transactional
     public void delete(Long commentId, Long userId) {
-        Comment comment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId)
                 .orElseThrow(()-> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
         if(!comment.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.NOT_COMMENT_OWNER);
         }
 
-        commentRepository.delete(comment);
+        comment.markDeleted();
+        commentRepository.save(comment);
     }
 
 
