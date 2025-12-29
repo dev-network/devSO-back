@@ -1,5 +1,6 @@
 package com.example.devso.entity.recruit;
 
+import com.example.devso.dto.request.recruit.RecruitRequest;
 import com.example.devso.entity.BaseEntity;
 import com.example.devso.entity.User;
 import jakarta.persistence.*;
