@@ -7,6 +7,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -21,9 +22,8 @@ public class RecruitResponse {
     private RecruitStatus status;
     private List<RecruitPosition> positions; // 다중 선택 가능
     private RecruitProgressType progressType;
-    private List<TechStack> stacks;
+    private List<StackResponse> stacks;
     private String username;
-
     private RecruitDuration duration;          // 진행 기간
     private RecruitContactMethod contactMethod; // 연락 방법
     private String contactInfo;                // 실제 이메일/링크/전화번호
@@ -37,29 +37,7 @@ public class RecruitResponse {
 
     // 기본 from 메서드 (북마크 false)
     public static RecruitResponse from(Recruit recruit){
-        return RecruitResponse.builder()
-                .id(recruit.getId())
-                .title(recruit.getTitle())
-                .content(recruit.getContent())
-                .imageUrl(recruit.getImageUrl())
-                .totalCount(recruit.getTotalCount())
-                .currentCount(recruit.getCurrentCount())
-                .type(recruit.getType())
-                .status(recruit.getStatus())
-                .positions(recruit.getPositions())
-                .progressType(recruit.getProgressType())
-                .stacks(recruit.getStacks())
-                .duration(recruit.getDuration())
-                .contactMethod(recruit.getContactMethod())
-                .contactInfo(recruit.getContactInfo())
-                .createdAt(recruit.getCreatedAt())
-                .updatedAt(recruit.getUpdatedAt())
-                .username(recruit.getUser().getUsername())
-                .deadLine(recruit.getDeadLine())
-                .bookmarked(false)
-                .viewCount(recruit.getViewCount())
-                .bookmarkCount(recruit.getRecruitBookMarks().size())
-                .build();
+        return from(recruit, false);
     }
 
     // 북마크 여부 포함 from 메서드
@@ -75,7 +53,10 @@ public class RecruitResponse {
                 .status(recruit.getStatus())
                 .positions(recruit.getPositions())
                 .progressType(recruit.getProgressType())
-                .stacks(recruit.getStacks())
+                // Enum 리스트를 StackResponse DTO 리스트로 변환하는 스트림 로직
+                .stacks(recruit.getStacks().stream()
+                        .map(StackResponse::from)
+                        .collect(Collectors.toList()))
                 .duration(recruit.getDuration())
                 .contactMethod(recruit.getContactMethod())
                 .contactInfo(recruit.getContactInfo())

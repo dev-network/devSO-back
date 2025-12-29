@@ -3,10 +3,11 @@ package com.example.devso.controller.recruit;
 import com.example.devso.dto.request.recruit.RecruitCommentRequest;
 import com.example.devso.dto.request.recruit.RecruitSearchRequest;
 import com.example.devso.dto.response.recruit.RecruitCommentResponse;
+import com.example.devso.dto.response.recruit.StackResponse;
 import com.example.devso.security.CustomUserDetails;
 import com.example.devso.dto.request.recruit.RecruitRequest;
 import com.example.devso.dto.response.ApiResponse;
-import com.example.devso.dto.response.EnumResponse;
+import com.example.devso.dto.response.recruit.EnumResponse;
 import com.example.devso.dto.response.recruit.RecruitResponse;
 import com.example.devso.entity.recruit.*;
 import com.example.devso.service.recruit.RecruitCommentService;
@@ -203,10 +204,11 @@ public class RecruitController {
 
     @Operation(summary = "기술 스택 enum 조회")
     @GetMapping("/enum/tech-stacks")
-    public ResponseEntity<List<EnumResponse>> getTechStacks() {
-        List<EnumResponse> stacks = Arrays.stream(TechStack.values())
-                .map(stack -> new EnumResponse(stack.getValue(), stack.getLabel(), stack.name()))
+    public ResponseEntity<List<StackResponse>> getTechStacks() {
+        List<StackResponse> stacks = Arrays.stream(TechStack.values())
+                .map(StackResponse::from)
                 .toList();
+
         return ResponseEntity.ok(stacks);
     }
 
