@@ -28,7 +28,8 @@ public enum RecruitType {
 
     // value로 enum 찾기
     @JsonCreator
-    public static RecruitType fromValue(int value) {
+    public static RecruitType fromValue(Integer value) {
+        if (value == null) return null;
         for (RecruitType method : values()) {
             if (method.value == value) {
                 return method;

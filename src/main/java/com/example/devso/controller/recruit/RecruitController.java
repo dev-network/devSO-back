@@ -1,6 +1,7 @@
 package com.example.devso.controller.recruit;
 
 import com.example.devso.dto.request.recruit.RecruitCommentRequest;
+import com.example.devso.dto.request.recruit.RecruitSearchRequest;
 import com.example.devso.dto.response.recruit.RecruitCommentResponse;
 import com.example.devso.security.CustomUserDetails;
 import com.example.devso.dto.request.recruit.RecruitRequest;
@@ -42,16 +43,16 @@ public class RecruitController {
                 .body(ApiResponse.success(response));
     }
 
-    @Operation(summary = "모집글 전체 조회")
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<RecruitResponse>>> findAll(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
-        Long  userId = userDetails !=null ? userDetails.getId() : null;
-        List<RecruitResponse> list = recruitService.findAll(userId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(list));
-    }
+//    @Operation(summary = "모집글 전체 조회")
+//    @GetMapping
+//    public ResponseEntity<ApiResponse<List<RecruitResponse>>> findAll(
+//            @AuthenticationPrincipal CustomUserDetails userDetails
+//    ){
+//        Long userId = (userDetails != null) ? userDetails.getId() : null;
+//        List<RecruitResponse> list = recruitService.findAll(userId);
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(ApiResponse.success(list));
+//    }
 
     @Operation(summary = "모집글 상세조회")
     @GetMapping("/{id}")
@@ -59,8 +60,7 @@ public class RecruitController {
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ){
-        System.out.println("로그인 유저 정보: " + userDetails);
-        Long userId = userDetails.getId() != null ? userDetails.getId() : null;
+        Long userId = (userDetails != null) ? userDetails.getId() : null;
         RecruitResponse response = recruitService.findById(id, userId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(response));
@@ -105,6 +105,23 @@ public class RecruitController {
     ) {
         RecruitStatus newStatus = recruitService.toggleStatus(userDetails.getId(), id);
         return ResponseEntity.ok(ApiResponse.success(newStatus));
+    }
+
+    @Operation(summary = "모집글 필터링 조회 (필터 및 검색 포함")
+    @GetMapping
+    public ResponseEntity<List<RecruitResponse>> getRecruits(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RecruitSearchRequest searchRequest) {
+
+        Long userId = (userDetails != null) ? userDetails.getId() : null;
+
+        // 검색 조건에 현재 유저명 세팅 (내가 쓴 글 필터링용)
+        if (userDetails != null) {
+            searchRequest.setCurrentUsername(userDetails.getUsername());
+        }
+
+        List<RecruitResponse> responses = recruitService.getFilteredRecruits(userId, searchRequest);
+        return ResponseEntity.ok(responses);
     }
 
 

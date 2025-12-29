@@ -36,7 +36,8 @@ public enum RecruitPosition {
 
     // value로 enum 찾기
     @JsonCreator
-    public static RecruitPosition fromValue(int value) {
+    public static RecruitPosition fromValue(Integer value) {
+        if (value == null) return null;
         for (RecruitPosition method : values()) {
             if (method.value == value) {
                 return method;

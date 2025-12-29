@@ -114,7 +114,6 @@ public class Recruit extends BaseEntity {
         recruit.totalCount = req.getTotalCount();
         recruit.status = RecruitStatus.OPEN;
         recruit.deadLine = req.getDeadLine();
-        recruit.imageUrl = req.getImageUrl();
         recruit.viewCount = 0;
         recruit.currentCount = 0;
         recruit.commentCount = 0; // 초기값 명시
@@ -132,8 +131,7 @@ public class Recruit extends BaseEntity {
             String contactInfo,
             List<TechStack> stacks,
             int totalCount,
-            LocalDate deadLine,
-            String imageUrl
+            LocalDate deadLine
     ) {
         this.title = title;
         this.content = content;
@@ -145,7 +143,6 @@ public class Recruit extends BaseEntity {
         this.stacks = stacks;
         this.totalCount = totalCount;
         this.deadLine = deadLine;
-        this.imageUrl = imageUrl;
     }
 
     // ===== 조회수 증가 =====

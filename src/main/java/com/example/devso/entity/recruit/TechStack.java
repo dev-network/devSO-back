@@ -58,7 +58,8 @@ public enum TechStack {
     }
 
     @JsonCreator
-    public static TechStack fromValue(int value) {
+    public static TechStack fromValue(Integer value) {
+        if (value == null) return null;
         for (TechStack stack : values()) {
             if (stack.value == value) {
                 return stack;
