@@ -10,6 +10,7 @@ import com.example.devso.dto.response.ApiResponse;
 import com.example.devso.dto.response.recruit.EnumResponse;
 import com.example.devso.dto.response.recruit.RecruitResponse;
 import com.example.devso.entity.recruit.*;
+import com.example.devso.service.recruit.GeminiService;
 import com.example.devso.service.recruit.RecruitCommentService;
 import com.example.devso.service.recruit.RecruitService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +36,7 @@ import java.util.List;
 public class RecruitController {
     private final RecruitService recruitService;
     private final RecruitCommentService recruitCommentService;
+    private final GeminiService geminiService;
 
     @Operation(summary = "모집글 생성")
     @PostMapping
@@ -177,6 +179,16 @@ public class RecruitController {
     ){
         recruitCommentService.delete(commentId, userDetails.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    // AI자가진단 체크리스트 가져오기
+    @GetMapping("/{id}/ai-checklist")
+    public ResponseEntity<String> getAiChecklist(@PathVariable Long id) {
+        // 서비스에서 이미 DB 캐싱 로직이 포함된 메서드를 호출합니다.
+        String jsonResult = geminiService.getOrGenerateChecklist(id);
+
+        // JSON 문자열을 그대로 반환하며, HTTP 상태 코드 200(OK)을 보냅니다.
+        return ResponseEntity.ok(jsonResult);
     }
 
 
