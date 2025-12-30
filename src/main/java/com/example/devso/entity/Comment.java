@@ -24,14 +24,23 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_comment_id")
+    private Comment parentComment;
+
     @Builder
-    public Comment(String content, User user, Post post) {
+    public Comment(String content, User user, Post post, Comment parentComment) {
         this.content = content;
         this.user = user;
         this.post = post;
+        this.parentComment = parentComment;
     }
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public boolean isReply() {
+        return this.parentComment != null;
     }
 }
