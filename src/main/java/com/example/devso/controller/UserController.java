@@ -9,6 +9,7 @@ import com.example.devso.dto.response.ApiResponse;
 import com.example.devso.dto.response.UserProfileResponse;
 import com.example.devso.service.FollowService;
 import com.example.devso.service.UserService;
+import com.example.devso.service.recruit.GeminiService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final FollowService followService;
+    private final GeminiService geminiService;
 
 
     private boolean isAdmin(CustomUserDetails userDetails) {
@@ -140,6 +142,27 @@ public class UserController {
         List<UserResponse> response = followService.getFollowings(username);
         return  ResponseEntity.ok(ApiResponse.success(response));
     }
+
+
+    @Operation(summary = "AI 자기소개 생성", description = "유저의 기술스택, 경력 등을 바탕으로 AI가 자기소개를 생성합니다.")
+    @PostMapping("/{username}/ai-bio")
+    public ResponseEntity<ApiResponse<String>> generateAiBio(
+            @PathVariable String username,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        // 1. 보안 검증: 로그인한 유저 본인인지 확인
+        if (userDetails == null || !userDetails.getUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // 2. AI 서비스 호출 (이전에 만든 메서드 호출)
+        // userDetails.getId()를 바로 사용할 수 있어 DB 조회를 줄일 수 있습니다.
+        String aiGeneratedBio = geminiService.generatePersonalStatement(userDetails.getId());
+
+        return ResponseEntity.ok(ApiResponse.success(aiGeneratedBio));
+    }
+
+
 
 
 }
