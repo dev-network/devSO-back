@@ -99,10 +99,6 @@ public class Recruit extends BaseEntity {
     @OneToMany(mappedBy = "recruit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecruitBookMark> recruitBookMarks = new ArrayList<>();
 
-    // AI 자가진단 결과 저장 필드
-    @Column(columnDefinition = "TEXT")
-    private String aiChecklist;
-
     // ===== 생성 =====
     public static Recruit create(User user, RecruitRequest req) {
         Recruit recruit = new Recruit();
@@ -190,9 +186,5 @@ public class Recruit extends BaseEntity {
     // ===== 모집 재오픈 =====
     public void open() {
         this.status = RecruitStatus.OPEN;
-    }
-
-    public void setAiChecklist(String aiChecklist) {
-        this.aiChecklist = aiChecklist;
     }
 }

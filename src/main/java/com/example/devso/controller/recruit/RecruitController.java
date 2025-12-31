@@ -4,6 +4,8 @@ import com.example.devso.dto.request.recruit.RecruitCommentRequest;
 import com.example.devso.dto.request.recruit.RecruitSearchRequest;
 import com.example.devso.dto.response.recruit.RecruitCommentResponse;
 import com.example.devso.dto.response.recruit.StackResponse;
+import com.example.devso.exception.CustomException;
+import com.example.devso.exception.ErrorCode;
 import com.example.devso.security.CustomUserDetails;
 import com.example.devso.dto.request.recruit.RecruitRequest;
 import com.example.devso.dto.response.ApiResponse;
@@ -181,14 +183,36 @@ public class RecruitController {
         return ResponseEntity.noContent().build();
     }
 
-    // AI자가진단 체크리스트 가져오기
+    @Operation(summary = "AI 자가진단 체크리스트 생성 및 조회")
     @GetMapping("/{id}/ai-checklist")
-    public ResponseEntity<String> getAiChecklist(@PathVariable Long id) {
-        // 서비스에서 이미 DB 캐싱 로직이 포함된 메서드를 호출합니다.
-        String jsonResult = geminiService.getOrGenerateChecklist(id);
+    public ResponseEntity<ApiResponse<String>> getAiChecklist(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(value = "refresh", defaultValue = "false") boolean refresh
+    ) {
+        if (userDetails == null) {
+            throw new CustomException(ErrorCode.AI_UNAUTHORIZED_ACCESS);
+        }
 
-        // JSON 문자열을 그대로 반환하며, HTTP 상태 코드 200(OK)을 보냅니다.
-        return ResponseEntity.ok(jsonResult);
+        String jsonResult = geminiService.getOrGenerateChecklist(id, userDetails.getId(), refresh);
+        return ResponseEntity.ok(ApiResponse.success(jsonResult));
+    }
+
+    @Operation(summary = "AI 자가진단 점수 계산 및 결과 저장")
+    @PostMapping("/{id}/ai-checklist/score")
+    public ResponseEntity<ApiResponse<String>> calculateAiScore(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody List<String> checkedQuestions
+    ) {
+        if (userDetails == null) {
+            throw new CustomException(ErrorCode.AI_UNAUTHORIZED_ACCESS);
+        }
+
+        // 반환 타입을 ApiResponse<Integer>에서 ApiResponse<String>으로 변경했습니다.
+        String resultJson = geminiService.calculateAndSaveScore(id, userDetails.getId(), checkedQuestions);
+
+        return ResponseEntity.ok(ApiResponse.success(resultJson));
     }
 
 
