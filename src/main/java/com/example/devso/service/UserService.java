@@ -54,13 +54,6 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
 
-        // ✅ [수정] Objects.equals를 사용하여 user.getEmail()이 null이어도 NPE가 발생하지 않도록 함
-        if (request.getEmail() != null && !Objects.equals(user.getEmail(), request.getEmail())) {
-            if (userRepository.existsByEmail(request.getEmail())) {
-                throw new IllegalStateException("이미 사용 중인 이메일입니다: " + request.getEmail());
-            }
-        }
-
         user.updateProfile(
                 request.getName(),
                 request.getBio(),
@@ -119,13 +112,6 @@ public class UserService {
             throw new IllegalArgumentException("사용자가 아닙니다.");
         }
 
-        // ✅ [수정] 여기도 동일하게 Objects.equals 적용
-        if (request.getEmail() != null && !Objects.equals(user.getEmail(), request.getEmail())) {
-            if (userRepository.existsByEmail(request.getEmail())) {
-                throw new IllegalStateException("이미 사용 중인 이메일입니다: " + request.getEmail());
-            }
-        }
-
         user.updateProfile(
                 request.getName(),
                 request.getBio(),
@@ -166,12 +152,8 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * 이메일 중복 여부 확인
-     * @param email 체크할 이메일
-     * @return 존재하면 true, 없으면 false
-     */
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+    public boolean checkEmail(String email, long userId) {
+        int count = userRepository.existsByEmail(email, userId);
+        return count == 0 ? false : true;
     }
 }

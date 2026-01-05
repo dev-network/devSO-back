@@ -103,8 +103,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("자신의 프로필만 수정할 수 있습니다.");
         }
 
-        userService.updateFullProfileByUsername(username, request);
-        return ResponseEntity.ok("프로필이 성공적으로 수정되었습니다.");
+        boolean isDuplicatedEmail = userService.checkEmail(request.getEmail(), userDetails.getId());
+        if(!isDuplicatedEmail){
+            userService.updateFullProfileByUsername(username, request);
+            return ResponseEntity.ok("프로필이 성공적으로 수정되었습니다.");
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/{username}/follow")
@@ -167,10 +172,10 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(aiGeneratedBio));
     }
 
-
     @GetMapping("/check-email")
-    public ResponseEntity<?> checkEmail(@RequestParam String email) {
-        boolean isAvailable = !userService.existsByEmail(email);
+    public ResponseEntity<?> checkEmail(@RequestParam("email") String email,
+    @AuthenticationPrincipal CustomUserDetails userDetail) {
+        boolean isAvailable = !userService.checkEmail(email, userDetail.getId());
 
         // 구조를 단순화해서 보냅니다.
         Map<String, Boolean> response = new HashMap<>();
@@ -179,4 +184,5 @@ public class UserController {
         // 반환값: { "available": true } 또는 { "available": false }
         return ResponseEntity.ok(response);
     }
+
 }
