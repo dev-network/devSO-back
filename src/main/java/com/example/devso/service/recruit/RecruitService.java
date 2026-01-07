@@ -157,8 +157,7 @@ public class RecruitService {
         String searchKeyword = (cond.getSearch() == null || cond.getSearch().trim().isEmpty()) ? null : cond.getSearch();
         List<TechStack> stacks = (cond.getStacks() == null || cond.getStacks().isEmpty()) ? null : cond.getStacks().stream().map(TechStack::fromValue).toList();
 
-        // 2. DB 호출 (필터 조건 전달)
-        // 여기서 Page 객체를 반환받으므로 전체 개수(totalElements) 정보가 포함됩니다.
+        // 2. DB 호출 (컨트롤러에서 채워진 currentUsername을 그대로 필터로 사용)
         Page<Recruit> recruitPage = recruitRepository.findRecruitsByFilters(
                 type, searchKeyword, stacks, position, progressType,
                 cond.isOnlyOpen(), cond.isOnlyBookmarked(), cond.isOnlyMyRecruits(),
