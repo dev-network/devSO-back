@@ -57,10 +57,12 @@ public class RecruitController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<RecruitResponse>> findById(
             @PathVariable Long id,
+            @RequestParam(value = "isIncrement", defaultValue = "false") boolean isIncrement,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ){
         Long userId = (userDetails != null) ? userDetails.getId() : null;
-        RecruitResponse response = recruitService.findById(id, userId);
+        RecruitResponse response = recruitService.findById(id, userId, isIncrement);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(response));
     }

@@ -49,11 +49,14 @@ public class RecruitService {
 
     //모집글 상세 조회
     @Transactional
-    public RecruitResponse findById(Long recruitId, Long currentUserId) {
+    public RecruitResponse findById(Long recruitId, Long currentUserId, boolean isIncrement) {
         Recruit recruit = recruitRepository.findByIdWithDetails(recruitId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RECRUIT_NOT_FOUND));
-        // 상세 조회에서만 조회수 증가
-        recruit.increaseViewCount();
+
+        // true일 때만 조회수 증가
+        if (isIncrement) {
+            recruit.increaseViewCount();
+        }
         return toRecruitResponseWithStatus(recruit, currentUserId);
     }
 
