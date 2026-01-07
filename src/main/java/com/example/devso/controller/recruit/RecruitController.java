@@ -12,6 +12,7 @@ import com.example.devso.dto.response.ApiResponse;
 import com.example.devso.dto.response.recruit.EnumResponse;
 import com.example.devso.dto.response.recruit.RecruitResponse;
 import com.example.devso.entity.recruit.*;
+import com.example.devso.service.FileService;
 import com.example.devso.service.recruit.GeminiService;
 import com.example.devso.service.recruit.RecruitCommentService;
 import com.example.devso.service.recruit.RecruitService;
@@ -51,17 +52,6 @@ public class RecruitController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(response));
     }
-
-//    @Operation(summary = "모집글 전체 조회")
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<List<RecruitResponse>>> findAll(
-//            @AuthenticationPrincipal CustomUserDetails userDetails
-//    ){
-//        Long userId = (userDetails != null) ? userDetails.getId() : null;
-//        List<RecruitResponse> list = recruitService.findAll(userId);
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(ApiResponse.success(list));
-//    }
 
     @Operation(summary = "모집글 상세조회")
     @GetMapping("/{id}")
@@ -120,8 +110,8 @@ public class RecruitController {
     @GetMapping
     public ResponseEntity<ApiResponse<Page<RecruitResponse>>> getRecruits(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @ModelAttribute RecruitSearchRequest searchRequest,
-            @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            RecruitSearchRequest searchRequest,
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Long userId = (userDetails != null) ? userDetails.getId() : null;
 
