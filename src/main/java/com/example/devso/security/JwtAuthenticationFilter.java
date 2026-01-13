@@ -34,7 +34,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return true;
         }
 
-        if (path.startsWith("/assets")) {
+        if (path.equals("/favicon.ico") ||
+            path.startsWith("/static/") ||
+            path.startsWith("/assets/") ||
+            path.endsWith(".png") ||
+            path.endsWith(".gif") ||
+            path.endsWith(".svg") ||
+            path.endsWith(".jpg") ||
+            path.endsWith(".html") ||
+            path.endsWith(".css") ||
+            path.endsWith(".js")) {
             return true;
         }
 

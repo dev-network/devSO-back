@@ -34,7 +34,10 @@ public class  WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:" + uploadDir + "/");
 
         registry.addResourceHandler("/assets/**")
-            .addResourceLocations("classpath:/static/assets/");
+                .addResourceLocations("classpath:/static/assets/");
+                
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
     }
 
     @Override
